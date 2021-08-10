@@ -1901,13 +1901,14 @@ sudo apt-get install libpcre3 libpcre3-dbg libpcre3-dev build-essential libpcap-
                 
 sudo apt-get install libnetfilter-queue-dev libnetfilter-queue1  \
                 libnetfilter-log-dev libnetfilter-log1      \
-                libnfnetlink-dev libnfnetlink0
+                libnfnetlink-dev libnfnetlink0 libjansson-dev
                 
 sudo apt-get install rustc cargo
 cargo install --force --debug --version 0.14.1 cbindgen
 ```
 
 ```
+wget "http://www.openinfosecfoundation.org/download/suricata-6.0.0.tar.gz" 
 tar xzvf suricata-6.0.0.tar.gz
 cd suricata-6.0.0
 ./configure --disable-gccmarch-native --prefix=/usr/ --sysconfdir=/etc --localstatedir=/var --enable-lua --enable-geoip

@@ -1906,3 +1906,9 @@ sudo apt-get install libnetfilter-queue-dev libnetfilter-queue1  \
 sudo apt-get install rustc cargo
 cargo install --force --debug --version 0.14.1 cbindgen
 ```
+
+```
+tar xzvf suricata-6.0.0.tar.gz
+cd suricata-6.0.0
+./configure --disable-gccmarch-native --prefix=/usr/ --sysconfdir=/etc --localstatedir=/var --enable-lua --enable-geoip
+```

@@ -24,4 +24,10 @@
 * Suricata tar `.deb` file (compile from source)
 * [XAMPP for Linux](https://www.apachefriends.org/download.html) or LAMP (I was lazy to install LAMP)
 
-## 
+## Network Config
+
+\*Make sure Kali and Ubuntu w Suricata are in `NAT mode`.
+
+## Software Config
+
+* Download files in [final_config](https://github.com/RyanNgCT/NetworkSec-IDPS/tree/main/suricata) folder and add them to the respective files (or replace the different areas).

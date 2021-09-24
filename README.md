@@ -1,5 +1,8 @@
 # NetworkSec-IDPS
 
+* Demonstrating Intrusion Detection and Prevention capabilities through Suricata IDPS.
+* Pfsense version and demonstration video coming soon!
+
 ## Navigation
 
 ```

@@ -1,0 +1,23 @@
+
+alert http any any -> 192.168.233.196 80 (msg:"Access Web Server"; sid:1; rev:1;)
+
+alert http any any -> $HOME_NET 80 (msg:"Directory Traversal Attack";flow:established,to_server; http.uri.raw; pcre:"/((\%2E)|\.)((\%2E)|\.)((\%2F)|\/)/i"; classtype:web-application-attack; sid:2; rev:1;)
+
+drop tcp any any -> $HOME_NET 80 (msg:"Possible DoS Attack [SYNflood]";flow:stateless,to_server;detection_filter:track by_dst, count 100, seconds 1; flags:S; sid:3; rev:1;)
+
+drop icmp any any -> $HOME_NET any (msg:"Possible DoS Attack [ICMPflood]";flow:stateless,to_server;detection_filter:track by_dst, count 100, seconds 1; sid:4; rev:1;)
+
+# allow itself and secured machine to access services
+drop tcp !192.168.233.1,!192.168.233.196 any -> 192.168.233.196 !80 (msg:"Possible Nmap TCP SYN Scan/Disallowed Traffic"; flow:from_client; flags:S; sid:5; rev:1;)
+
+# from an article
+alert tcp any any -> any $HTTP_PORTS (msg:"SQL Injection Attack (Union Select)";pcre:"/((((\%55)|(u)|(\%75))((\%4e)|(n)|(\%6e))((\%69)|(i)|(\%49))((\%6f)|(o)|(\%4f))((\%4e)|(n)|(\%6e)))[^\n]*(((\%73)|(s)|(\%53))((\%65)|(e)|(\%45))((\%6c)|(l)|(\%4c))((\%65)|(e)|(\%45))((\%63)|(c)|(\%43))((\%74)|(t)|(\%54))))/i";classtype: Web-application-attack; sid:9397; rev:28;)
+
+alert tcp any any -> any $HTTP_PORTS (msg:"SQL Injection Attack (Common SQL Syntax Filter)";pcre:"/((((((\%6f)|(o)|(\%4f))((\%52)|(r)|(\%72))(%20))|(((\%6f)|(o)|(\%4f))((\%52)|(r)|(\%72))((%2b)|(\+))))|((\%0a))|(((((\%6f)|(o)|(\%4f))((\%72)|(r)|(\%52))((\/)|(\%2f))((\*)|(\%2a)))))|(((((\%4c)|(l)|(\%6c))((\%69)|(i)|(\%49))((\%6b)|(k)|(%4b))((\%65)|(e)|(\%45)))))|(((((\%63)|(c)|(\%43))((\%6f)|(o)|(\%4f))((\%6e)|(n)|(\%4e))((\%63)|(c)|(\%43))((\%61)|(a)|(\%41))((\%74)|(t)|(\%54))((\%76)|(v)|(\%56))((\%65)|(e)|(\%45))((\%72)|(r)|(\%52))((\%73)|(s)|(\%53))((\%69)|(i)|(\%49))((\%6f)|(o)|(\%4f))((\%6e)|(n)|(\%4e)))|(((\%68)|(h)|(\%48))((\%6f)|(o)|(\%4f))((\%73)|(s)|(\%53))((\%74)|(t)|(\%54))((\%6e)|(n)|(\%4e))((\%61)|(a)|(\%41))((\%6d)|(m)|(\%4d))((\%65)|(e)|(\%45)))|(((\%55)|(u)|(\%75))((\%55)|(u)|(\%75))((\%49)|(i)|(\%69))((\%44)|(d)|(\%64)))|(((\%64)|(d)|(\%44))((\%61)|(a)|(\%41))((\%74)|(t)|(\%54))((\%61)|(a)|(\%41))((\%64)|(d)|(\%44))((\%69)|(i)|(\%49))((\%72)|(r)|(\%52)))))))/i"; classtype: web-application-attack; sid:9383; rev:19;)
+
+# canonical sometimes pushes exe updates which are false positive, thus src and dest zone shld be "$HOME_NET"
+alert http $HOME_NET any <> $HOME_NET any (msg:"Possible Malicious Executable";content: "|4D 5A|";sid:6;rev:1;)
+
+drop http any any <> $HOME_NET any  (msg:"Eicar Test Malware";content: "$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$";sid:7;rev:1;)
+
+alert tcp any any -> $HOME_NET $HTTP_PORTS (msg:"XSS Attack";pcre:"/((\%3C)|<)((\%2F)\\/)*[a-zA-Z0-9\%]+((\%3E)|>)/i"; sid:8; rev:1;)
